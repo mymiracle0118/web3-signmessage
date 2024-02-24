@@ -18,7 +18,7 @@ const affiliateEarnings = new web3.utils.BN(web3.utils.toWei(affiliateEarningsSt
 const earningsHex = `0x${earnings.toString('hex')}`;
 const affiliateEarninsHex = `0x${affiliateEarnings.toString('hex')}`
 
-const contractAddress = "0xb66525d6b1c90e803556142c23b3a4fa0e8ae384";
+const contractAddress = "0x5f5bd39B103CB29c1709635112D2b7be5A61F28A";
 const hashInput = web3.eth.abi.encodeParameters(['address', 'address', 'uint256', 'bool', 'uint256'], [contractAddress, address, earnings + affiliateEarnings, inETH, nocne]);
 
 const prefix = "\x19Ethereum Signed Message:\n32";
