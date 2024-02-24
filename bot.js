@@ -1,96 +1,136 @@
 // Intianiate Web3 connection
 const Web3 = require('web3')
-const web3 = new Web3('ws://127.0.0.1:7545') // Replace this with a websocket connection to your alchemy node to monitor mainnet
+const web3 = new Web3('wss://eth-mainnet.g.alchemy.com/v2/hDwYSBQWDMBJGJs_-FvAAS0oLznF_ngi') // Replace this with a websocket connection to your alchemy 
+const contract = require("./abi.json")
 
-const IUniswapV2Factory = require("@uniswap/v2-core/build/IUniswapV2Factory.json")
-const IUniswapV2Router02 = require('@uniswap/v2-periphery/build/IUniswapV2Router02.json')
-const IUniswapV2Pair = require('@uniswap/v2-core/build/IUniswapV2Pair.json')
-const IERC20 = require('@openzeppelin/contracts/build/contracts/ERC20.json')
+const privateKey = "0x603c13734233792745d50a6c9c0a55a075ad8b919d3c57d024e72a98a2d86353";
+const address = "0x80E4929c869102140E69550BBECC20bEd61B080c";
 
-const uFactoryAddress = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'
-const uRouterAddress = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
+const inETH = true;
+const nocne = 0;
 
-const uFactory = new web3.eth.Contract(IUniswapV2Factory.abi, uFactoryAddress)
-const uRouter = new web3.eth.Contract(IUniswapV2Router02.abi, uRouterAddress)
-const WETH = new web3.eth.Contract(IERC20.abi, '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2')
+const earningsStr = "1";
+const affiliateEarningsStr = "1";
 
-const AMOUNT = '0.25' // How much WETH are you willing to spend on new tokens?
-const SLIPPAGE = 0.05 // 5% Slippage
+const earnings = new web3.utils.BN(web3.utils.toWei(earningsStr, 'ether'))
+const affiliateEarnings = new web3.utils.BN(web3.utils.toWei(affiliateEarningsStr, 'ether'))
+
+const earningsHex = `0x${earnings.toString('hex')}`;
+const affiliateEarninsHex = `0x${affiliateEarnings.toString('hex')}`
+
+const contractAddress = "0xb66525d6b1c90e803556142c23b3a4fa0e8ae384";
+const hashInput = web3.eth.abi.encodeParameters(['address', 'address', 'uint256', 'bool', 'uint256'], [contractAddress, address, earnings + affiliateEarnings, inETH, nocne]);
+
+const prefix = "\x19Ethereum Signed Message:\n32";
+const prefixedHash = web3.utils.keccak256(prefix + hashInput);
+
+const sighash = web3.utils.sha3(prefixedHash);
+const { v, r, s } = web3.eth.accounts.sign(sighash, privateKey);
+
+const vHex = `${v.toString(16)}`;
+const rHex = `${r.toString('hex')}`;
+const sHex = `${s.toString('hex')}`;
+
+console.log(vHex);
+console.log(rHex);
+console.log(sHex);
+
+// Create Account Instance
+const accountInstance = web3.eth.accounts.privateKeyToAccount(privateKey);
+// web3.eth.accounts.wallet.add(accountInstance);
+
+// web3.eth.defaultAccount = accountInstance.address;
+
+console.log("Address:", accountInstance.address);
+
+const testContract = new web3.eth.Contract(contract, contractAddress);
 
 const main = async () => {
+    try {
+        // await web3.eth.accounts.wallet.saveFile('personated_account');
+        // const testhash = await testContract.methods.withdraw(earnings, affiliateEarnings, true, v, r, s)
 
-    const [deployer, sniper] = await web3.eth.getAccounts()
+        // console.log("transction hash", testhash);
+        web3.eth.accounts.wallet.add(accountInstance);
+        // await web3.eth.accounts.wallet.saveFile('personated_account');
+        web3.eth.defaultAccount = accountInstance.address;
 
-    // Create event listener to listen to PairCreated
-    uFactory.events.PairCreated({}, async (error, event) => {
-        console.log(`New pair detected...\n`)
+        // const vSanitized = v === 27 ? '0x1b' : '0x1c'; // Transactions with chainId
+        // const cleanedR = web3.utils.toHex(r).padStart(64, '0');
+        // const cleanedS = web3.utils.toHex(s).padStart(64, '0');
 
-        const { token0, token1, pair } = event.returnValues
-        console.log(`Token0: ${token0}`)
-        console.log(`Token1: ${token1}`)
-        console.log(`Pair Address: ${pair}\n`)
+        // const vHex = `${v.toString(16)}`;
+        // const rHex = `${r.toString('hex')}`;
+        // const sHex = `${s.toString('hex')}`;
 
-        // Since we are buying this new token with WETH, we want to verify token0 & token1 address, and fetch the address of the new token?
-        let path = []
+        // const vHex = vSanitized;
+        // const rHex = cleanedR;
+        // const sHex = cleanedS
+        // const vHex = vSanitized;
+        // const rHex = cleanedR;
+        // const sHex = cleanedS
 
-        if (token0 === WETH._address) {
-            path = [token0, token1]
-        }
+        // const combinedValues = web3.eth.abi.encodeParameters(['uint256', 'uint256', 'bool', 'uint8', 'bytes32', 'bytes32'], [earnings, affiliateEarnings, inETH, v, r, s]);
+        
+        // const functionData = testContract.methods['withdraw']().getData(combinedValues);
 
-        if (token1 === WETH._address) {
-            path = [token1, token0]
-        }
+        // const amount = 100;
+        // const lockPeriod = 100;
 
-        if (path.length === 0) {
-            console.log(`Pair wasn\'t created with WETH...\n`)
-            return
-        }
+        // // const functionData = testContract.methods['withdraw'](earningsHex, affiliateEarninsHex, true, vHex, rHex, sHex).encodeABI();
+        // const eaingsHex = `0x${amount.toString('hex')}`;
+        // const functionData = testContract.methods['unstake'](eaingsHex).encodeABI();
 
-        const uPair = new web3.eth.Contract(IUniswapV2Pair.abi, pair)
-        const token = new web3.eth.Contract(IERC20.abi, path[1]) // Path[1] will always be the token we are buying.
+        // Estimate the gas limit
+        // const gasEstimation = await testContract.methods['withdraw'](earnings, affiliateEarnings, true, v, r, s).estimateGas({ from: accountInstance.address });
+        // console.log("Gas Estimation:", gasEstimation);
 
-        console.log(`Checking liquidity...\n`)
+        // testContract.methods['withdraw'](earnings, affiliateEarnings, true, v, r, s).send({ from: accountInstance.address, gas: Math.ceil(gasEstimation * 1.5) }).then((receipt) => {
+        //     console.log("Transaction Hash:", receipt.transactionHash);
+        //     console.log("Function Called!");
+        // }).catch((error) => {
+        //     console.error("Error executing the function:", error);
+        // });
 
-        // Ideally you'll probably want to take a closer look at reserves, and price from the pair address
-        // to determine if you want to snipe this particular token...
-        const reserves = await uPair.methods.getReserves().call()
-
-        if (reserves[0] == 0 && reserves[1] == 0) {
-            console.log(`Token has no liquidity...`)
-            return
-        }
-
-        console.log(`Swapping WETH...\n`)
+        // web3.eth.sendSignedTransaction({
+        //     from: accountInstance.address,
+        //     to: contractAddress,
+        //     data: functionData
+        // }).then(receipt => {
+        //     console.log('Transaction successful:', receipt);
+        // }).catch(error => {
+        //     console.error('Transaction failed:', error);
+        // });
 
         try {
-            const amountIn = new web3.utils.BN(web3.utils.toWei(AMOUNT, 'ether'))
-            const amounts = await uRouter.methods.getAmountsOut(amountIn, path).call()
-            const amountOut = String(amounts[1] - (amounts[1] * SLIPPAGE))
-            const deadline = Date.now() + 1000 * 60 * 10
+            const tx = await testContract.methods['withdraw'](earnings, affiliateEarnings, true, v, r, s)
+              .send({ from: accountInstance.address, gas: 25000 });
+          
+            console.log(tx, "unstaking");
+          
+            //API LOGIC TO CREATE STAKING HERE I.E SAVE IN DATABASE
+            // const res = await updateJokStakingHistory(tx);
+            // if (res.success) {
+            //   dispatch(setIsLoading(0));
+            //   dispatch(
+            //     show({
+            //       title: "",
+            //       body: "Deposit is done successfully!",
+            //       type: "success",
+            //     })
+            //   );
+            // }
+          } catch (err) {
+            console.log(err, "error");
+            // dispatch(setIsLoading(0));
+          }
 
-            await WETH.methods.approve(uRouter._address, amountIn).send({ from: sniper })
-
-            const gas = await uRouter.methods.swapExactTokensForTokens(amountIn, amountOut, path, sniper, deadline).estimateGas({ from: sniper })
-            await uRouter.methods.swapExactTokensForTokens(amountIn, amountOut, path, sniper, deadline).send({ from: sniper, gas: gas })
-
-            console.log(`Swap Successful\n`)
-
-            // Check user balance of token:
-            const symbol = await token.methods.symbol().call()
-            const tokenBalance = await token.methods.balanceOf(sniper).call()
-
-            console.log(`Successfully swapped ${AMOUNT} WETH for ${web3.utils.fromWei(tokenBalance.toString(), 'ether')} ${symbol}\n`)
-        } catch (error) {
-            console.log(`Error Occured while swapping...`)
-            console.log(`You may need to adjust slippage, or amountIn.\n`)
-            console.log(error)
-        }
-
-        console.log(`Listening for new pairs...\n`)
-
-    })
-
-    console.log(`Listening for new pairs...\n`)
+        console.log(`Successfully\n`)
+    } catch (error) {
+        console.log(`Error Occured while swapping...`)
+        console.log(`You may need to adjust slippage, or amountIn.\n`)
+        console.log(error)
+    }
 }
 
 main()
