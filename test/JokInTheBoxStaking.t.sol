@@ -20,18 +20,18 @@ contract JokInTheBoxStakingTest is Test {
     uint256 totalEarnings = earnings + totalEarnings;
 
     function setUp() public {
+
+        testnetFork = vm.createFork("https://goerli.infura.io/v3/8df75ffc9bba40ae9933bec919baf187");
+        vm.selectFork(testnetFork);
+        vm.rollFork(10592166);
         vm.prank(beneficiary);
         boxStaking = new MockJoklnTheBoxStaking();
 
-        testnetFork = vm.createFork("https://goerli.infura.io/v3/8df75ffc9bba40ae9933bec919baf187");
     }
 
     function testGetMessageHash() public {
 
-        vm.selectFork(testnetFork);
         assertEq(vm.activeFork(), testnetFork);
-
-        vm.rollFork(10592166);
 
         // console.log(address(boxStaking));
 
@@ -40,7 +40,7 @@ contract JokInTheBoxStakingTest is Test {
         vm.prank(beneficiary);
         uint256 _nonce = boxStaking.nonce(beneficiary);
         console.log(_nonce);
-        bytes32 test = boxStaking.getMessageHash(beneficiary, totalEarnings, inETH, message, nonce);
+        bytes32 test = boxStaking.getMessageHash(beneficiary, totalEarnings, inETH, message, _nonce);
         console.logBytes32(test);
 
         vm.prank(beneficiary);
