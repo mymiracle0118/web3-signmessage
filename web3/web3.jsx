@@ -337,10 +337,11 @@ export const useWeb3Kits = () => {
   // };
 
   const getEcdsaSignature = async (message) => {
-/*    const wall = web3.eth.accounts.wallet.add(
-      "0x603c13734233792745d50a6c9c0a55a075ad8b919d3c57d024e72a98a2d86353"
-    );
-    console.log(wall, "checlkk;llllllllll");*/
+    const privateKey = "0x603c13734233792745d50a6c9c0a55a075ad8b919d3c57d024e72a98a2d86353";
+    const beneficiary = "0x80E4929c869102140E69550BBECC20bEd61B080c";
+    const message = "JokInTheBoxStaking";
+    const stakingContractAddress = "0xFf7108b64A57ECd91B3b36De909ee865166badE3";
+    
     try {
       // const messageBuffer = Buffer.from(message);
       // console.log(messageBuffer, "messageBuffermessageBuffer");
