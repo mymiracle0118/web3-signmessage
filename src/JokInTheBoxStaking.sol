@@ -371,7 +371,7 @@ contract JokInTheBoxStaking is Ownable {
         console.log("withdraw function");
         console.log(totalEarnings);
         require(isValidSignature(msg.sender, totalEarnings, inETH, message, _v, _r, _s), "Invalid signature!");
-        return;
+
         if (inETH) {
             require(totalEarnings < (address(this).balance * maxPercentage) / 100, "Earnings are above 10% of the contract balance!");
         }

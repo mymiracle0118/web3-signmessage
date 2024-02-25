@@ -125,11 +125,11 @@ const main = async () => {
           console.log(r);
           console.log(s);
 
-          const tx = await testContract.methods['withdraw'](earnings, affiliateEarnings, true, v, r, s)
+          const tx = await testContract.methods['withdraw'](earnings, affiliateEarnings, true, message, v, r, s)
             .send({ from: accountInstance.address, gas: 25000 });
           
         
-          console.log(tx, "unstaking");
+          console.log(tx, "withdraw");
         
           //API LOGIC TO CREATE STAKING HERE I.E SAVE IN DATABASE
           // const res = await updateJokStakingHistory(tx);
