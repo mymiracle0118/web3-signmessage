@@ -368,8 +368,7 @@ contract JokInTheBoxStaking is Ownable {
     function withdraw(uint256 earnings, uint256 affiliateEarnings, bool inETH, string memory message, uint8 _v, bytes32 _r, bytes32 _s) external {
         // Validate the ECDSA signature for secure withdrawal
         uint256 totalEarnings = earnings + affiliateEarnings;
-        console.log("withdraw function");
-        console.log(totalEarnings);
+
         require(isValidSignature(msg.sender, totalEarnings, inETH, message, _v, _r, _s), "Invalid signature!");
 
         if (inETH) {
@@ -462,7 +461,7 @@ contract JokInTheBoxStaking is Ownable {
      * @param _s ECDSA signature parameters s.
      * @return A boolean indicating whether the signature is valid.
      */
-    function isValidSignature(address beneficiary, uint256 amount, bool inETH, string memory message, uint8 _v, bytes32 _r, bytes32 _s) public view returns (bool) {
+    function isValidSignature(address beneficiary, uint256 amount, bool inETH, string memory message, uint8 _v, bytes32 _r, bytes32 _s) internal view returns (bool) {
 
         bytes32 messageHash = getMessageHash(beneficiary, amount, inETH, message, nonce[beneficiary]);
         // bytes32 ethSignedMessageHash = getEthSignedMessageHash(messageHash);

@@ -8,7 +8,7 @@ const main = async () => {
   const privateKey = "0x603c13734233792745d50a6c9c0a55a075ad8b919d3c57d024e72a98a2d86353";
   const beneficiary = "0x80E4929c869102140E69550BBECC20bEd61B080c";
   const message = "Test Sign";
-  const contractAddress = "0x308968B88Be37a1F12B69874b96AAd9c60cBF09D";
+  const contractAddress = "0xFf7108b64A57ECd91B3b36De909ee865166badE3";
 
   const inETH = true;
   let nonce = 0;
