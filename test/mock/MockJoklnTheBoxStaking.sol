@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "src/JokInTheBoxStaking.sol";
+import {JokInTheBoxStaking} from "src/JokInTheBoxStaking.sol";
 
 contract MockJoklnTheBoxStaking is JokInTheBoxStaking {
-  constructor() {}
+  constructor() JokInTheBoxStaking() {}
 
   function isValidSignatureTest(address beneficiary, uint256 amount, bool inETH, string memory message, uint8 _v, bytes32 _r, bytes32 _s) public view returns (bool) {
     return super.isValidSignature(beneficiary, amount, inETH, message, _v, _r, _s);

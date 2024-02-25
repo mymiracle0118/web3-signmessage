@@ -33,15 +33,17 @@ contract JokInTheBoxStakingTest is Test {
 
         vm.rollFork(10592166);
 
-        console.log(address(boxStaking));
+        // console.log(address(boxStaking));
+
+        // console.log(address(boxStaking.bot()));
 
         vm.prank(beneficiary);
         uint256 _nonce = boxStaking.nonce(beneficiary);
         console.log(_nonce);
-        // bytes32 test = boxStaking.getMessageHash(beneficiary, totalEarnings, inETH, message, nonce);
-        // console.logBytes32(test);
+        bytes32 test = boxStaking.getMessageHash(beneficiary, totalEarnings, inETH, message, nonce);
+        console.logBytes32(test);
 
-        // vm.prank(beneficiary);
-        // boxStaking.withdraw(1 ether, 1 ether, true, "Test Sign", 0x1b, 0x0ad47c7033f20e9db977b0776266bfdcad94df94f1495e800479c5df6de8653d, 0x7bff0cdae93afb329048a95a01c5bb3bcfdae86c1de9066be60a15ed47ea5668);
+        vm.prank(beneficiary);
+        boxStaking.withdraw(1 ether, 1 ether, true, "Test Sign", 0x1b, 0x0ad47c7033f20e9db977b0776266bfdcad94df94f1495e800479c5df6de8653d, 0x7bff0cdae93afb329048a95a01c5bb3bcfdae86c1de9066be60a15ed47ea5668);
     }
 }
